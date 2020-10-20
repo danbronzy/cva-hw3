@@ -55,11 +55,9 @@ for frame in range(1, seq.shape[2]):
     # Update rect
     rects[frame,:] = nextRect
 
-
-
 np.save('../result/girlseqrects-wcrt.npy', rects)
 oldRects = np.load("../result/girlseqrects.npy")
-for frameNum in [1, 100, 200, 300, 400]:
+for frameNum in [1, 20, 40, 60, 80]:
 
     tr = rects[frameNum, :]
 
@@ -75,11 +73,14 @@ for frameNum in [1, 100, 200, 300, 400]:
     fig,ax = plt.subplots(1)
     ax.imshow(seq[:,:,frameNum], cmap = 'gray')
 
-    thisRect = patches.Rectangle(xy, width, height, fill=False, edgecolor = [1,0,0])
     oldRect =  patches.Rectangle(oxy, owidth, oheight, fill=False, edgecolor = [0,0,1])
-    ax.add_patch(thisRect)
+    thisRect = patches.Rectangle(xy, width, height, fill=False, edgecolor = [1,0,0])
+    
     ax.add_patch(oldRect)
+    ax.add_patch(thisRect)
+    
 
     plt.axis('off')
 
     plt.savefig("../images/1_4_girl_{}.png".format(frameNum), pad_inches=0, bbox_inches='tight', transparent=True)
+

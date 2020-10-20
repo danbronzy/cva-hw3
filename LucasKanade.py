@@ -60,23 +60,28 @@ def LucasKanade(It, It1, rect, threshold, num_iters, p0=np.zeros(2)):
         #jacobian is Identity matrix
         jac = np.array([[1,0],[0,1]])
 
-        H = np.zeros((2,2))
-        for z in zip(gradI_x_warped.flatten(), gradI_y_warped.flatten()):
-            gradI = np.reshape([z[0], z[1]], (1,2))
-            mult = np.dot(gradI, jac)
-            H = H + np.dot(mult.T, mult)
+        grad = np.vstack((gradI_x_warped.flatten(), gradI_y_warped.flatten())).T
+        A = np.dot(grad, jac)
+        H = np.dot(A.T, A)
+
+        # H = np.zeros((2,2))
+        # for z in zip(gradI_x_warped.flatten(), gradI_y_warped.flatten()):
+        #     gradI = np.reshape([z[0], z[1]], (1,2))
+        #     mult = np.dot(gradI, jac)
+        #     H = H + np.dot(mult.T, mult)
 
         Hinv = np.linalg.inv(H)
 
-        deltaP = np.zeros((2,1))
+        deltaP = np.dot(Hinv, np.dot(A.T, errImg.flatten()).reshape((2,1)))
+        # deltaP = np.zeros((2,1))
 
-        for z in zip(gradI_x_warped.flatten(), gradI_y_warped.flatten(), errImg.flatten()):
-            gradI = np.reshape([z[0], z[1]], (1,2))
-            A = np.dot(gradI, jac)
-            b = z[2]
-            deltaP = deltaP + np.dot(A.T, b)
+        # for z in zip(gradI_x_warped.flatten(), gradI_y_warped.flatten(), errImg.flatten()):
+        #     gradI = np.reshape([z[0], z[1]], (1,2))
+        #     A = np.dot(gradI, jac)
+        #     b = z[2]
+        #     deltaP = deltaP + np.dot(A.T, b)
         
-        deltaP = np.dot(Hinv, deltaP)
+        # deltaP = np.dot(Hinv, deltaP)
         
         dist = np.linalg.norm(deltaP)
 

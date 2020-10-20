@@ -83,8 +83,9 @@ for frameNum in [1, 100, 200, 300, 400]:
 
     thisRect = patches.Rectangle(xy, width, height, fill=False, edgecolor = [1,0,0])
     oldRect =  patches.Rectangle(oxy, owidth, oheight, fill=False, edgecolor = [0,0,1])
-    ax.add_patch(thisRect)
     ax.add_patch(oldRect)
+    ax.add_patch(thisRect)
+    
 
     plt.axis('off')
 
