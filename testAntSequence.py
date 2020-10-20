@@ -6,7 +6,7 @@ from SubtractDominantMotion import SubtractDominantMotion
 parser = argparse.ArgumentParser()
 parser.add_argument('--num_iters', type=int, default=1e3, help='number of iterations of Lucas-Kanade')
 parser.add_argument('--threshold', type=float, default=1e-2, help='dp threshold of Lucas-Kanade for terminating optimization')
-parser.add_argument('--tolerance', type=float, default=0.04, help='binary threshold of intensity difference when computing the mask')
+parser.add_argument('--tolerance', type=float, default=0.025, help='binary threshold of intensity difference when computing the mask')
 args = parser.parse_args()
 num_iters = args.num_iters
 threshold = args.threshold
@@ -15,6 +15,7 @@ tolerance = args.tolerance
 seq = np.load('../data/antseq.npy')
 masks = np.zeros((seq.shape[0], seq.shape[1], seq.shape[2] - 1))
 for frame in range(2, seq.shape[2]):
+# for frame in [30, 60, 90, 120]:
     print("Frame: {}".format(frame))
     image1 = seq[:,:,frame - 1]
     image2 = seq[:,:,frame]
@@ -31,5 +32,12 @@ for frame in [30, 60, 90, 120]:
     image1_c = np.dstack((image1, image1))
     blue = np.where(mask, 1.0, image1)
     highlighted = np.dstack((image1_c, blue))
+
+    fig,ax = plt.subplots(1)
+    ax.imshow(highlighted)
+    plt.axis('off')
+
+    plt.savefig("../images/2_3_ant_{}.png".format(frame), pad_inches=0, bbox_inches='tight', transparent=True)
+
     plt.imshow(highlighted)
     plt.show()

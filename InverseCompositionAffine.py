@@ -22,7 +22,7 @@ def warpImg(img, M):
     :return img_warped: warped image
     """
     M = M/M[2,2]
-    warped = cv2.warpAffine(img, M[0:2,:], (img.shape[1], img.shape[0]))
+    warped = cv2.warpAffine(img, M[0:2,:], (img.shape[1], img.shape[0]), flags=cv2.WARP_INVERSE_MAP|cv2.INTER_LINEAR)
 
     return warped
 
@@ -52,7 +52,8 @@ def InverseCompositionAffine(It, It1, threshold, num_iters):
     Hinv = np.linalg.inv(H)
 
     M = np.eye(3)
-    for _ in range(num_iters):
+    for itera in range(num_iters):
+        print(itera)
         #Warp new image and derivatives
         It1_warped_pre = warpImg(It1, M)
 
@@ -66,7 +67,7 @@ def InverseCompositionAffine(It, It1, threshold, num_iters):
 
         #calculate error image
         errImg = (It1_warped - template_masked).flatten()
-        deltaP = -np.dot(Hinv, np.dot(sdi[np.flatnonzero(It1_mask)].T, 
+        deltaP = np.dot(Hinv, np.dot(sdi[np.flatnonzero(It1_mask)].T, 
                                       errImg[np.flatnonzero(It1_mask)])).reshape(6,1)
         
         deltaM = recoverMfromP(deltaP)

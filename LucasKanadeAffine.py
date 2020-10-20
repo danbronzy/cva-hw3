@@ -22,7 +22,7 @@ def warpImg(img, M):
     :return img_warped: warped image
     """
     M = M/M[2,2]
-    warped = cv2.warpAffine(img, M[0:2,:], (img.shape[1], img.shape[0]))
+    warped = cv2.warpAffine(img, M[0:2,:], (img.shape[1], img.shape[0]), flags=cv2.WARP_INVERSE_MAP|cv2.INTER_LINEAR)
 
     return warped
 
@@ -111,7 +111,7 @@ def LucasKanadeAffine(It, It1, threshold, num_iters):
         
         deltaP = np.dot(Hinv, deltaP)
 
-        p = p - deltaP #WHAT THE FUCK
+        p = p + deltaP
         M = recoverMfromP(p)
         dist = np.linalg.norm(deltaP)
         if (dist  < threshold):
